@@ -195,6 +195,9 @@ paths:
           $ref: '#/components/responses/401'
       operationId: get-me-benefits
       description: List all the benefits a person has
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
   '/me/benefits/{benefit_id}':
     parameters:
       - schema:
@@ -215,6 +218,9 @@ paths:
           $ref: '#/components/responses/401'
       operationId: get-me-benefits-benefit_id
       description: Get benefit detail
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
   /installment/catalog:
     get:
       summary: Get User Installment Catalog
@@ -696,6 +702,132 @@ paths:
         - $ref: '#/components/parameters/Authorization'
       tags:
         - installment admin
+  /borrow/application:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - borrow admin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        applicants_detail:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            position:
+                              type: string
+                            phone:
+                              type: string
+                            address:
+                              type: string
+                            email:
+                              type: string
+                        item:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            name:
+                              type: string
+                            type:
+                              type: string
+                            spec:
+                              type: object
+                              properties:
+                                ram:
+                                  type: number
+                                storage:
+                                  type: number
+                        requested_at:
+                          type: string
+              examples:
+                ListBorrowApplicationRequestExample:
+                  value:
+                    total: 1
+                    data:
+                      - id: 1
+                        applicants_detail:
+                          name: user name
+                          position: engineer
+                          phone: '0821'
+                          address: jakarta
+                          email: email@gmail.com
+                        item:
+                          id: 101
+                          name: Iphone X
+                          type: Phone
+                          spec:
+                            ram: 4
+                            storage: 128
+                        requested_at: '2009-11-10T23:00:00Z'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+      operationId: get-borrow-application
+      description: Get Borrow Application Request
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
+    post:
+      summary: ''
+      operationId: post-borrow-application
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '422':
+          $ref: '#/components/responses/422'
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
+      description: Accept Borrow Application
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+            examples:
+              AcceptBorrowApplicationExample:
+                value:
+                  id: 10
+    patch:
+      summary: ''
+      operationId: patch-borrow-application
+      description: Decline Borrow Application
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
+      responses:
+        '201':
+          description: Created
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '422':
+          $ref: '#/components/responses/422'
 components:
   schemas:
     Installment:
@@ -954,13 +1086,13 @@ components:
             item_name: mac pro 2021
             item_type: laptop
             item_img: item_uuid.jpeg
-            borrow_at: 09/10/2020
+            borrow_at: '2009-11-10T23:00:00Z'
             borrow_by: moris
           - item_id: 201
             item_name: Iphone x
             item_type: Phone
             item_img: item_uuid.jpeg
-            borrow_at: 10/10/2021
+            borrow_at: '2009-11-10T23:00:00Z'
             borrow_by: agus
     MyItemBorrowedHistory:
       value:
@@ -970,7 +1102,7 @@ components:
             item_name: mac pro 2021
             item_type: laptop
             item_img: item_uuid.jpeg
-            borrow_at: 09/10/2020
+            borrow_at: '2009-11-10T23:00:00Z'
     MyBenefits:
       value:
         total: 2
