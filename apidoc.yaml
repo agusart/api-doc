@@ -704,7 +704,7 @@ paths:
         - installment admin
   /borrow/application:
     get:
-      summary: Your GET endpoint
+      summary: Get Borrow Application Request
       tags:
         - borrow admin
       responses:
@@ -785,7 +785,7 @@ paths:
         - $ref: '#/components/parameters/Content-Type'
         - $ref: '#/components/parameters/Authorization'
     post:
-      summary: ''
+      summary: Accept Borrow Application Request
       tags:
         - borrow admin
       operationId: post-borrow-application
@@ -815,7 +815,7 @@ paths:
                 value:
                   id: 10
     patch:
-      summary: ''
+      summary: Decline Borrow Application Request
       tags:
         - borrow admin
       operationId: patch-borrow-application
