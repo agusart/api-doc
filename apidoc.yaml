@@ -57,62 +57,23 @@ paths:
                   dateOfBirth: '1996-08-24'
   /items:
     get:
-      summary: Get list of items
+      summary: Get list of
+      tags:
+        - lend/borrow program
       responses:
         '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: array
-                x-examples:
-                  example-1:
-                    item_name: iphone
-                    item_img: file_name.jpeg
-                    item_status: 'false'
-                items:
-                  type: object
-                  properties:
-                    item_id:
-                      type: integer
-                    item_name:
-                      type: string
-                    item_img:
-                      type: string
-                    item_status:
-                      type: boolean
-                      description: 'true if the item is available, false if the item is borrowed'
-              examples:
-                example-1:
-                  value:
-                    - item_id: 101
-                      item_name: iphone
-                      item_img: item_name.jpeg
-                      item_status: true
+          $ref: '#/components/responses/ItemToBeBorrowed'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
         '404':
-          description: Item Not Found
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                properties:
-                  message:
-                    type: string
-                    minLength: 1
-                required:
-                  - message
-                x-examples:
-                  example-1:
-                    message: error message
-              examples:
-                example-1:
-                  value:
-                    message: error message
+          $ref: '#/components/responses/422'
       operationId: get-Items
       description: Get list of items provided to be borrowed
-      x-internal: false
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
   '/items/{itemId}':
     parameters:
       - schema:
@@ -122,188 +83,38 @@ paths:
         required: true
     get:
       summary: Get item detail
+      tags:
+        - lend/borrow program
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                x-examples:
-                  example-1:
-                    item_id: '101'
-                    item_name: Phone
-                    item_type: Iphone 13
-                    item_img: item_uuid.jpeg
-                    color: white
-                    ram: 4GB
-                    storage: 128GB
-                    item_status: 'true'
-                properties:
-                  item_id:
-                    type: integer
-                  item_name:
-                    type: string
-                    minLength: 1
-                  item_type:
-                    type: string
-                    minLength: 1
-                  item_img:
-                    type: string
-                    minLength: 1
-                  color:
-                    type: string
-                    minLength: 1
-                  ram:
-                    type: integer
-                  storage:
-                    type: integer
-                  item_status:
-                    type: boolean
-                    description: 'true if the item is available, false if the item is not available'
-                required:
-                  - item_id
-                  - item_name
-                  - item_type
-                  - item_img
-                  - color
-                  - ram
-                  - storage
-                  - item_status
-              examples:
-                example-1:
-                  value:
-                    item_id: 101
-                    item_name: Phone
-                    item_type: Iphone 13
-                    item_img: item_uuid.jpeg
-                    color: White
-                    ram: 4
-                    storage: 128
-                    item_status: true
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                properties:
-                  message:
-                    type: string
-                    minLength: 1
-                required:
-                  - message
-                x-examples:
-                  example-1:
-                    message: error message
-              examples:
-                example-1:
-                  value:
-                    message: error message
+          $ref: '#/components/responses/ItemToBeBorrowedDetail'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
       operationId: get-Items-itemId
       description: Get item detail
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
   '/items/{itemId}/borrow':
     post:
       summary: Create borrow item request
+      tags:
+        - lend/borrow program
       operationId: post-user
       responses:
         '201':
-          description: Request Created
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                properties:
-                  item_type:
-                    type: string
-                    minLength: 1
-                  item_name:
-                    type: string
-                    minLength: 1
-                  item_id:
-                    type: number
-                  item_spec:
-                    type: object
-                    properties:
-                      item_ram:
-                        type: number
-                      item_storage:
-                        type: number
-                    required:
-                      - item_ram
-                      - item_storage
-                required:
-                  - item_type
-                  - item_name
-                  - item_id
-                  - item_spec
-                x-examples:
-                  example-1:
-                    item_type: Phone
-                    item_name: Iphone 12
-                    item_id: 101
-                    item_spec:
-                      item_ram: 4
-                      item_storage: 128
-              examples:
-                example-1:
-                  value:
-                    item_type: Phone
-                    item_name: Iphone 12
-                    item_id: 101
-                    item_spec:
-                      item_ram: 4
-                      item_storage: 128
+          $ref: '#/components/responses/Borrow'
         '400':
-          description: Missing Required Information
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              examples:
-                example-2:
-                  value:
-                    message: error message
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                item_type:
-                  type: string
-                item_name:
-                  type: string
-                item_spec:
-                  type: object
-                  properties:
-                    item_ram:
-                      type: integer
-                    item_storage:
-                      type: integer
-                  required:
-                    - item_ram
-                    - item_storage
-              required:
-                - item_type
-                - item_name
-            examples:
-              example-1:
-                value:
-                  item_type: Phone
-                  item_name: Iphone 12
-                  item_id: 101
-                  item_spec:
-                    item_ram: 4
-                    item_storage: 128
-        description: Post the necessary fields for the API to borrow the item.
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '422':
+          $ref: '#/components/responses/422'
       description: Request to borrow item
+      requestBody:
+        $ref: '#/components/requestBodies/BorrowRequest'
     parameters:
       - schema:
           type: integer
@@ -311,6 +122,8 @@ paths:
         in: path
         required: true
         description: item uuid
+      - $ref: '#/components/parameters/Content-Type'
+      - $ref: '#/components/parameters/Authorization'
   '/items/{itemId}/return':
     parameters:
       - schema:
@@ -320,128 +133,91 @@ paths:
         required: true
     post:
       summary: Create return item request
+      tags:
+        - lend/borrow program
       operationId: post-items-itemId-return_item
       responses:
         '201':
           description: Created
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              examples:
-                example-1:
-                  value:
-                    message: error message
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
       description: Request to return item
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
   /items/borrow:
     get:
       summary: Get list of borrowed items
+      tags:
+        - lend/borrow program
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    item_id:
-                      type: integer
-                    item_type:
-                      type: string
-                    item_name:
-                      type: string
-                    item_img:
-                      type: string
-                    borrow_at:
-                      type: string
-                      description: show the time when the item is borrowed
-                    borrow_by:
-                      type: string
-                      description: name of the people who borrow the item
-              examples:
-                example-1:
-                  value:
-                    - item_id: 101
-                      item_type: Phone
-                      item_name: Iphone 13
-                      borrow_at: 09/10/2021
-                      borrow_by: moris
+          $ref: '#/components/responses/ItemBorrowed'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              examples:
-                example-1:
-                  value:
-                    message: error message
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
       operationId: get-items-borrowed
       description: Get list of borrowed items
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
   /me/borrow:
     get:
       summary: List of item someone borrowed
+      tags:
+        - lend/borrow program
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    item_id:
-                      type: integer
-                    item_name:
-                      type: string
-                    item_type:
-                      type: string
-                    item_img:
-                      type: string
-                    borrow_at:
-                      type: string
-              examples:
-                example-1:
-                  value:
-                    - item_id: 102
-                      item_name: Iphone 12
-                      item_type: Phone
-                      item_img: item_uuid.jpeg
-                      borrow_at: 10/11/2021
-                    - item_id: 201
-                      item_name: Macbook Pro
-                      item_type: Laptop
-                      item_img: item_uuid.jpeg
-                      borrow_at: 9/11/2021
+          $ref: '#/components/responses/MyItemBorrowedHistory'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              examples:
-                example-1:
-                  value:
-                    message: error message
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
       operationId: get-me-borrow
       description: Get list of item a certain person borrow
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
+  /me/benefits:
+    get:
+      summary: List of my benefits
+      tags:
+        - benefits
+      responses:
+        '200':
+          $ref: '#/components/responses/MyBenefits'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+      operationId: get-me-benefits
+      description: List all the benefits a person has
+  '/me/benefits/{benefit_id}':
+    parameters:
+      - schema:
+          type: number
+        name: benefit_id
+        in: path
+        required: true
+    get:
+      summary: Benefit detail
+      tags:
+        - benefits
+      responses:
+        '200':
+          $ref: '#/components/responses/BenefitDetail'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+      operationId: get-me-benefits-benefit_id
+      description: Get benefit detail
   /installment/catalog:
     get:
-      summary: Get Installment Catalog
+      summary: Get User Installment Catalog
       tags:
         - installment/purchase program
       responses:
@@ -559,7 +335,7 @@ paths:
         - $ref: '#/components/parameters/Authorization'
   /installment:
     get:
-      summary: Get User Installment List
+      summary: Get Installment List
       tags:
         - installment/purchase program
       responses:
@@ -897,17 +673,17 @@ paths:
                 description: ''
                 type: object
                 properties:
-                  success:
-                    type: boolean
+                  id:
+                    type: number
                 required:
-                  - success
+                  - id
                 x-examples:
                   example-1:
-                    success: true
+                    id: 1
               examples:
                 DeclineInstallmentApplication:
                   value:
-                    success: true
+                    id: 1
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -978,6 +754,72 @@ components:
           approval_at: '2009-11-10T23:00:00Z'
           finish_at: '2009-11-10T23:00:00Z'
           first_time: false
+    Borrowed-item:
+      title: Borrowed-item
+      type: object
+      properties:
+        id:
+          type: number
+        item_id:
+          type: number
+        account_id:
+          type: number
+        item_name:
+          type: string
+        item_type:
+          type: string
+        item_img:
+          type: string
+        item_status:
+          type: boolean
+        ram:
+          type: number
+        storage:
+          type: number
+        color:
+          type: string
+        borrow_at:
+          type: string
+        borrow_by:
+          type: string
+      x-examples:
+        example-1:
+          id: 1
+          item_id: 10
+          account_id: 55
+          item_name: Iphone X
+          item_type: Phone
+          item_img: item_uuid.jpeg
+          item_status: true
+          ram: 4
+          storage: 123
+          color: black
+          borrow_at: 10/10/2021
+          borrow_by: moris
+    Benefit:
+      title: Benefit
+      type: object
+      properties:
+        id:
+          type: number
+        benefit_id:
+          type: number
+        account_id:
+          type: number
+        benefit_name:
+          type: string
+        benefit_img:
+          type: string
+        subsidy_amount:
+          type: number
+      x-examples:
+        example-1:
+          id: 10
+          benefit_id: 10
+          account_id: 100
+          benefit_name: Vision
+          benefit_img: benefit_uuid.jpeg
+          subsidy_amount: 1000000
   requestBodies:
     LoginRequest:
       content:
@@ -1003,6 +845,36 @@ components:
             Login Request Example:
               $ref: '#/components/examples/LoginRequestExample'
       description: Login Request
+    BorrowRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              item_id:
+                type: number
+              item_type:
+                type: string
+              item_name:
+                type: string
+              item_spec:
+                type: object
+                required:
+                  - item_ram
+                  - item_storage
+                properties:
+                  item_ram:
+                    type: number
+                  item_storage:
+                    type: number
+            required:
+              - item_id
+              - item_type
+              - item_name
+              - item_spec
+          examples:
+            Borrow request:
+              $ref: '#/components/examples/BorrowRequestExample'
   examples:
     LoginRequestExample:
       value:
@@ -1034,6 +906,87 @@ components:
             description: RAM 10GB
             price: 5000
             type: phone
+    ItemToBeBorrowedExample:
+      value:
+        total: 2
+        data:
+          - item_id: 101
+            item_name: mac pro 2021
+            item_type: laptop
+            item_img: item_uuid.jpeg
+            item_status: true
+          - item_id: 201
+            item_name: Iphone x
+            item_type: Phone
+            item_img: item_uuid.jpeg
+            item_status: true
+    ItemToBeBorrowedDetailExample:
+      value:
+        item_id: 101
+        item_name: Iphone X
+        item_type: Phone
+        item_img: item_uuid.jpeg
+        color: White
+        ram: 4
+        storage: 128
+        item_status: true
+    BorrowRequestExample:
+      value:
+        item_id: 101
+        item_type: Phone
+        item_name: Iphone x
+        item_spec:
+          item_ram: 4
+          item_storage: 128
+    BorrowResponseExample:
+      value:
+        item_id: 101
+        item_type: Phone
+        item_name: Iphone x
+        item_spec:
+          item_ram: 4
+          item_storage: 128
+    ListOfItemBorrowed:
+      value:
+        total: 2
+        data:
+          - item_id: 101
+            item_name: mac pro 2021
+            item_type: laptop
+            item_img: item_uuid.jpeg
+            borrow_at: 09/10/2020
+            borrow_by: moris
+          - item_id: 201
+            item_name: Iphone x
+            item_type: Phone
+            item_img: item_uuid.jpeg
+            borrow_at: 10/10/2021
+            borrow_by: agus
+    MyItemBorrowedHistory:
+      value:
+        total: 1
+        data:
+          - item_id: 101
+            item_name: mac pro 2021
+            item_type: laptop
+            item_img: item_uuid.jpeg
+            borrow_at: 09/10/2020
+    MyBenefits:
+      value:
+        total: 2
+        data:
+          - benefit_id: 111
+            benefit_name: Vaccination
+            benefit_img: benefit_uuid.jpeg
+          - benefit_id: 222
+            benefit_name: Vision
+            benefit_img: benefit_uuid.jpeg
+    BenefitDetail:
+      value:
+        benefit_id: 111
+        benefit_name: Vaccination
+        benefit_img: benefit_uuid.jpeg
+        subsidy_amount: 1000000
   parameters:
     Content-Type:
       name: Content-Type
@@ -1190,3 +1143,229 @@ components:
           examples:
             UserInstallmentCatalog:
               $ref: '#/components/examples/InstallmentCatalogExample'
+    ItemToBeBorrowed:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              total:
+                type: number
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    item_id:
+                      type: number
+                    item_name:
+                      type: string
+                    item_img:
+                      type: string
+                    item_status:
+                      type: boolean
+                      description: 'true if the item is available, false if the item is unavailable'
+                  required:
+                    - item_id
+                    - item_name
+                    - item_img
+                    - item_status
+            required:
+              - total
+              - data
+          examples:
+            Item to be borrowed:
+              $ref: '#/components/examples/ItemToBeBorrowedExample'
+    ItemToBeBorrowedDetail:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              item_id:
+                type: number
+              item_name:
+                type: string
+              item_type:
+                type: string
+              item_img:
+                type: string
+              color:
+                type: string
+              ram:
+                type: number
+              storage:
+                type: number
+              item_status:
+                type: boolean
+                description: 'true if the item is available, false if the item is unavailable'
+            required:
+              - item_id
+              - item_name
+              - item_type
+              - item_img
+              - color
+              - ram
+              - storage
+              - item_status
+          examples:
+            Item to be borrowed detail:
+              $ref: '#/components/examples/ItemToBeBorrowedDetailExample'
+    Borrow:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              item_id:
+                type: number
+              item_type:
+                type: string
+              item_name:
+                type: string
+              item_spec:
+                type: object
+                required:
+                  - item_ram
+                  - item_storage
+                properties:
+                  item_ram:
+                    type: number
+                  item_storage:
+                    type: number
+            required:
+              - item_id
+              - item_type
+              - item_name
+              - item_spec
+          examples:
+            Borrow response:
+              $ref: '#/components/examples/BorrowResponseExample'
+    ItemBorrowed:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              total:
+                type: number
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    item_id:
+                      type: number
+                    item_name:
+                      type: string
+                    item_type:
+                      type: string
+                    item_img:
+                      type: string
+                    borrow_at:
+                      type: string
+                      default: dd/mm/yyyy
+                    borrow_by:
+                      type: string
+                  required:
+                    - item_id
+                    - item_name
+                    - item_type
+                    - item_img
+                    - borrow_at
+                    - borrow_by
+            required:
+              - total
+              - data
+          examples:
+            List of item borrowed:
+              $ref: '#/components/examples/ListOfItemBorrowed'
+    MyItemBorrowedHistory:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              total:
+                type: number
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    item_id:
+                      type: number
+                    item_name:
+                      type: string
+                    item_type:
+                      type: string
+                    item_img:
+                      type: string
+                    borrow_at:
+                      type: string
+                      default: dd/mm/yyyy
+                  required:
+                    - item_id
+                    - item_name
+                    - item_type
+                    - item_img
+                    - borrow_at
+            required:
+              - total
+              - data
+          examples:
+            My borrowed items:
+              $ref: '#/components/examples/MyItemBorrowedHistory'
+    MyBenefits:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              total:
+                type: number
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    benefit_id:
+                      type: number
+                    benefit_name:
+                      type: string
+                    benefit_img:
+                      type: string
+                  required:
+                    - benefit_id
+                    - benefit_name
+                    - benefit_img
+            required:
+              - total
+              - data
+          examples:
+            Benefit list:
+              $ref: '#/components/examples/ListOfItemBorrowed'
+    BenefitDetail:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              benefit_id:
+                type: number
+              benefit_name:
+                type: string
+              benefit_img:
+                type: string
+              subsidy_amount:
+                type: number
+          examples:
+            Benefit detail:
+              $ref: '#/components/examples/BenefitDetail'
