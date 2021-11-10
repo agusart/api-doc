@@ -29,6 +29,418 @@ paths:
         - $ref: '#/components/parameters/Content-Type'
       requestBody:
         $ref: '#/components/requestBodies/LoginRequest'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+              required:
+                - firstName
+                - lastName
+                - email
+                - dateOfBirth
+            examples:
+              Create User Bob Fellow:
+                value:
+                  firstName: Bob
+                  lastName: Fellow
+                  email: bob.fellow@gmail.com
+                  dateOfBirth: '1996-08-24'
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new user.
+   /items:
+    get:
+      summary: Get list of items
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: array
+                x-examples:
+                  example-1:
+                    item_name: iphone
+                    item_img: file_name.jpeg
+                    item_status: 'false'
+                items:
+                  type: object
+                  properties:
+                    item_id:
+                      type: integer
+                    item_name:
+                      type: string
+                    item_img:
+                      type: string
+                    item_status:
+                      type: boolean
+                      description: 'true if the item is available, false if the item is borrowed'
+              examples:
+                example-1:
+                  value:
+                    - item_id: 101
+                      item_name: iphone
+                      item_img: item_name.jpeg
+                      item_status: true
+        '404':
+          description: Item Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - message
+                x-examples:
+                  example-1:
+                    message: error message
+              examples:
+                example-1:
+                  value:
+                    message: error message
+      operationId: get-Items
+      description: Get list of items provided to be borrowed
+      x-internal: false
+  '/items/{itemId}':
+    parameters:
+      - schema:
+          type: number
+        name: itemId
+        in: path
+        required: true
+    get:
+      summary: Get item detail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    item_id: '101'
+                    item_name: Phone
+                    item_type: Iphone 13
+                    item_img: item_uuid.jpeg
+                    color: white
+                    ram: 4GB
+                    storage: 128GB
+                    item_status: 'true'
+                properties:
+                  item_id:
+                    type: integer
+                  item_name:
+                    type: string
+                    minLength: 1
+                  item_type:
+                    type: string
+                    minLength: 1
+                  item_img:
+                    type: string
+                    minLength: 1
+                  color:
+                    type: string
+                    minLength: 1
+                  ram:
+                    type: integer
+                  storage:
+                    type: integer
+                  item_status:
+                    type: boolean
+                    description: 'true if the item is available, false if the item is not available'
+                required:
+                  - item_id
+                  - item_name
+                  - item_type
+                  - item_img
+                  - color
+                  - ram
+                  - storage
+                  - item_status
+              examples:
+                example-1:
+                  value:
+                    item_id: 101
+                    item_name: Phone
+                    item_type: Iphone 13
+                    item_img: item_uuid.jpeg
+                    color: White
+                    ram: 4
+                    storage: 128
+                    item_status: true
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                required:
+                  - message
+                x-examples:
+                  example-1:
+                    message: error message
+              examples:
+                example-1:
+                  value:
+                    message: error message
+      operationId: get-Items-itemId
+      description: Get item detail
+  '/items/{itemId}/borrow':
+    post:
+      summary: Create borrow item request
+      operationId: post-user
+      responses:
+        '201':
+          description: Request Created
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  item_type:
+                    type: string
+                    minLength: 1
+                  item_name:
+                    type: string
+                    minLength: 1
+                  item_id:
+                    type: number
+                  item_spec:
+                    type: object
+                    properties:
+                      item_ram:
+                        type: number
+                      item_storage:
+                        type: number
+                    required:
+                      - item_ram
+                      - item_storage
+                required:
+                  - item_type
+                  - item_name
+                  - item_id
+                  - item_spec
+                x-examples:
+                  example-1:
+                    item_type: Phone
+                    item_name: Iphone 12
+                    item_id: 101
+                    item_spec:
+                      item_ram: 4
+                      item_storage: 128
+              examples:
+                example-1:
+                  value:
+                    item_type: Phone
+                    item_name: Iphone 12
+                    item_id: 101
+                    item_spec:
+                      item_ram: 4
+                      item_storage: 128
+        '400':
+          description: Missing Required Information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                example-2:
+                  value:
+                    message: error message
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item_type:
+                  type: string
+                item_name:
+                  type: string
+                item_spec:
+                  type: object
+                  properties:
+                    item_ram:
+                      type: integer
+                    item_storage:
+                      type: integer
+                  required:
+                    - item_ram
+                    - item_storage
+              required:
+                - item_type
+                - item_name
+            examples:
+              example-1:
+                value:
+                  item_type: Phone
+                  item_name: Iphone 12
+                  item_id: 101
+                  item_spec:
+                    item_ram: 4
+                    item_storage: 128
+        description: Post the necessary fields for the API to borrow the item.
+      description: Request to borrow item
+    parameters:
+      - schema:
+          type: integer
+        name: itemId
+        in: path
+        required: true
+        description: item uuid
+  '/items/{itemId}/return':
+    parameters:
+      - schema:
+          type: integer
+        name: itemId
+        in: path
+        required: true
+    post:
+      summary: Create return item request
+      operationId: post-items-itemId-return_item
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    message: error message
+      description: Request to return item
+  /items/borrow:
+    get:
+      summary: Get list of borrowed items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    item_id:
+                      type: integer
+                    item_type:
+                      type: string
+                    item_name:
+                      type: string
+                    item_img:
+                      type: string
+                    borrow_at:
+                      type: string
+                      description: show the time when the item is borrowed
+                    borrow_by:
+                      type: string
+                      description: name of the people who borrow the item
+              examples:
+                example-1:
+                  value:
+                    - item_id: 101
+                      item_type: Phone
+                      item_name: Iphone 13
+                      borrow_at: 09/10/2021
+                      borrow_by: moris
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    message: error message
+      operationId: get-items-borrowed
+      description: Get list of borrowed items
+  /me/borrow:
+    get:
+      summary: List of item someone borrowed
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    item_id:
+                      type: integer
+                    item_name:
+                      type: string
+                    item_type:
+                      type: string
+                    item_img:
+                      type: string
+                    borrow_at:
+                      type: string
+              examples:
+                example-1:
+                  value:
+                    - item_id: 102
+                      item_name: Iphone 12
+                      item_type: Phone
+                      item_img: item_uuid.jpeg
+                      borrow_at: 10/11/2021
+                    - item_id: 201
+                      item_name: Macbook Pro
+                      item_type: Laptop
+                      item_img: item_uuid.jpeg
+                      borrow_at: 9/11/2021
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    message: error message
+      operationId: get-me-borrow
+      description: Get list of item a certain person borrow
 components:
   schemas: {}
   requestBodies:
