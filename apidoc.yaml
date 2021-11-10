@@ -55,9 +55,7 @@ paths:
                   lastName: Fellow
                   email: bob.fellow@gmail.com
                   dateOfBirth: '1996-08-24'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
-   /items:
+  /items:
     get:
       summary: Get list of items
       responses:
@@ -441,8 +439,316 @@ paths:
                     message: error message
       operationId: get-me-borrow
       description: Get list of item a certain person borrow
+  /installment/catalog:
+    get:
+      summary: Get User Installment Catalog
+      tags:
+        - installment/purchase program
+      responses:
+        '200':
+          $ref: '#/components/responses/UserInstallmentCatalog'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+      operationId: get-installment-catalog
+      description: Get List Of Previous User Installment Item
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
+  '/installment/catalog/{catalogId}':
+    parameters:
+      - schema:
+          type: number
+          example: 1
+        name: catalogId
+        in: path
+        required: true
+    get:
+      summary: Get Catalog Detail Information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  id:
+                    type: number
+                  title:
+                    type: string
+                    minLength: 1
+                  specification:
+                    type: string
+                    minLength: 1
+                  price:
+                    type: number
+                  type:
+                    type: string
+                    minLength: 1
+                  available_color:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                  product:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      serial-number:
+                        type: string
+                    required:
+                      - name
+                      - serial-number
+                  subsidy:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                required:
+                  - id
+                  - title
+                  - specification
+                  - price
+                  - type
+                  - available_color
+                  - product
+                  - subsidy
+                x-examples:
+                  example-1:
+                    id: 1
+                    title: mac pro 2021
+                    specification: RAM 20GB
+                    price: 1000000
+                    type: device
+                    available_color:
+                      - Red
+                      - Blue
+                    product:
+                      name: ''
+                      serial-number: ''
+                    subsidy: []
+              examples:
+                Catalog Detail Information:
+                  value:
+                    id: 1
+                    title: mac pro 2021
+                    specification: RAM 20GB
+                    price: 1000000
+                    type: device
+                    available_color:
+                      - Red
+                      - Blue
+                    product:
+                      name: ''
+                      serial-number: ''
+                    subsidy: []
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+      operationId: get-installment-catalog-catalogId
+      description: Get Catalog Detail Information from spesific catalog
+      tags:
+        - installment/purchase program
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
+  /installment:
+    get:
+      summary: Get Installment List
+      tags:
+        - installment/purchase program
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  total:
+                    type: number
+                  data:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - id
+                        - title
+                        - specification
+                        - start_contract
+                        - end_contract
+                        - payment_remaining
+                      properties:
+                        id:
+                          type: number
+                        title:
+                          type: string
+                          minLength: 1
+                        specification:
+                          type: string
+                          minLength: 1
+                        start_contract:
+                          type: string
+                          minLength: 1
+                        end_contract:
+                          type: string
+                          minLength: 1
+                        payment_remaining:
+                          type: number
+                required:
+                  - total
+                  - data
+                x-examples:
+                  example-1:
+                    total: 1
+                    data:
+                      - id: 1
+                        title: macbook
+                        specification: 2GB
+                        start_contract: '2009-11-10T23:00:00Z'
+                        end_contract: '2009-11-10T23:00:00Z'
+                        payment_remaining: 5000000
+              examples:
+                InstallmentList:
+                  value:
+                    total: 1
+                    data:
+                      - id: 1
+                        title: macbook
+                        specification: 2GB
+                        start_contract: '2009-11-10T23:00:00Z'
+                        end_contract: '2009-11-10T23:00:00Z'
+                        payment_remaining: 5000000
+      operationId: get-installment
+      description: Get User Previous Installment List
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
+    post:
+      summary: Apply Installment/Purcashe Program
+      operationId: post-installment
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '422':
+          $ref: '#/components/responses/422'
+      tags:
+        - installment/purchase program
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                catalog_id:
+                  type: number
+              required:
+                - catalog_id
+              x-examples:
+                example-1:
+                  catalog_id: 5
+            examples:
+              InstallmentApplicationExample:
+                value:
+                  catalog_id: 5
+        description: installment apllication request
+      description: Apply Installment/Purcashe Program
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+  '/installment/{installmentId}':
+    parameters:
+      - schema:
+          type: number
+          example: 1
+        name: installmentId
+        in: path
+        required: true
+    get:
+      summary: Get Detail Installment
+      tags:
+        - installment/purchase program
+      operationId: get-installment-installmentId
+      description: Get Detail Contract of Installment
+      responses:
+        '200':
+          $ref: '#/components/responses/400'
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/401'
+      parameters:
+        - $ref: '#/components/parameters/Content-Type'
+        - $ref: '#/components/parameters/Authorization'
 components:
-  schemas: {}
+  schemas:
+    Installment:
+      description: ''
+      type: object
+      properties:
+        id:
+          type: number
+        account_id:
+          type: number
+        item_id:
+          type: number
+        price:
+          type: number
+        subsidy_amount:
+          type: number
+        installment_status:
+          type: string
+          minLength: 1
+        requested_at:
+          type: string
+          minLength: 1
+        started_at:
+          type: string
+          minLength: 1
+        approval_at:
+          type: string
+          minLength: 1
+        finish_at:
+          type: string
+          minLength: 1
+        first_time:
+          type: boolean
+      required:
+        - id
+        - account_id
+        - item_id
+        - price
+        - subsidy_amount
+        - installment_status
+        - requested_at
+        - started_at
+        - approval_at
+        - finish_at
+        - first_time
+      x-examples:
+        example-1:
+          id: 1
+          account_id: 5
+          item_id: 5
+          price: 555
+          subsidy_amount: 55
+          installment_status: approved
+          requested_at: '2009-11-10T23:00:00Z'
+          started_at: '2009-11-10T23:00:00Z'
+          approval_at: '2009-11-10T23:00:00Z'
+          finish_at: '2009-11-10T23:00:00Z'
+          first_time: false
   requestBodies:
     LoginRequest:
       content:
@@ -485,6 +791,20 @@ components:
         fields:
           fieldname1: ''
           fieldname2: ''
+    InstallmentCatalogExample:
+      value:
+        total: 2
+        data:
+          - id: 1
+            title: mac pro 2021
+            description: RAM 20GB
+            price: 1000000
+            type: device
+          - id: 1
+            title: Iphone X
+            description: RAM 10GB
+            price: 5000
+            type: phone
   parameters:
     Content-Type:
       name: Content-Type
@@ -493,6 +813,13 @@ components:
       schema:
         type: string
         default: application/json
+    Authorization:
+      name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+        default: 'Bearer {{access_token}}'
   responses:
     '200':
       description: Succes Response
@@ -579,3 +906,58 @@ components:
           examples:
             UnprocessibleEntityResponseExample:
               $ref: '#/components/examples/422Resp'
+    UserInstallmentCatalog:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            description: ''
+            type: object
+            properties:
+              total:
+                type: number
+              data:
+                type: array
+                uniqueItems: true
+                minItems: 1
+                items:
+                  required:
+                    - id
+                    - title
+                    - description
+                    - price
+                    - type
+                  properties:
+                    id:
+                      type: number
+                    title:
+                      type: string
+                      minLength: 1
+                    description:
+                      type: string
+                      minLength: 1
+                    price:
+                      type: number
+                    type:
+                      type: string
+                      minLength: 1
+            required:
+              - total
+              - data
+            x-examples:
+              example-1:
+                total: 2
+                data:
+                  - id: 1
+                    title: mac pro 2021
+                    description: RAM 20GB
+                    price: 1000000
+                    type: device
+                  - id: 1
+                    title: Iphone X
+                    description: RAM 10GB
+                    price: 5000
+                    type: phone
+          examples:
+            UserInstallmentCatalog:
+              $ref: '#/components/examples/InstallmentCatalogExample'
