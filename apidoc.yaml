@@ -441,7 +441,7 @@ paths:
       description: Get list of item a certain person borrow
   /installment/catalog:
     get:
-      summary: Get User Installment Catalog
+      summary: Get Installment Catalog
       tags:
         - installment/purchase program
       responses:
@@ -559,7 +559,7 @@ paths:
         - $ref: '#/components/parameters/Authorization'
   /installment:
     get:
-      summary: Get Installment List
+      summary: Get User Installment List
       tags:
         - installment/purchase program
       responses:
@@ -897,17 +897,17 @@ paths:
                 description: ''
                 type: object
                 properties:
-                  id:
-                    type: number
+                  success:
+                    type: boolean
                 required:
-                  - id
+                  - success
                 x-examples:
                   example-1:
-                    id: 1
+                    success: true
               examples:
                 DeclineInstallmentApplication:
                   value:
-                    id: 1
+                    success: true
         '400':
           $ref: '#/components/responses/400'
         '401':
