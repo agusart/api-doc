@@ -786,6 +786,8 @@ paths:
         - $ref: '#/components/parameters/Authorization'
     post:
       summary: ''
+      tags:
+        - borrow admin
       operationId: post-borrow-application
       responses:
         '200':
@@ -814,6 +816,8 @@ paths:
                   id: 10
     patch:
       summary: ''
+      tags:
+        - borrow admin
       operationId: patch-borrow-application
       description: Decline Borrow Application
       parameters:
