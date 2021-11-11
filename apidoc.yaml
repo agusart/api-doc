@@ -55,9 +55,9 @@ paths:
                   lastName: Fellow
                   email: bob.fellow@gmail.com
                   dateOfBirth: '1996-08-24'
-  /items:
+  /inventory:
     get:
-      summary: Get list of
+      summary: Get inventory
       tags:
         - lend/borrow program
       responses:
@@ -67,45 +67,21 @@ paths:
           $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
-        '404':
-          $ref: '#/components/responses/422'
       operationId: get-Items
       description: Get list of items provided to be borrowed
       parameters:
         - $ref: '#/components/parameters/Content-Type'
         - $ref: '#/components/parameters/Authorization'
-  '/items/{itemId}':
-    parameters:
-      - schema:
-          type: number
-        name: itemId
-        in: path
-        required: true
-    get:
-      summary: Get item detail
-      tags:
-        - lend/borrow program
-      responses:
-        '200':
-          $ref: '#/components/responses/ItemToBeBorrowedDetail'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-      operationId: get-Items-itemId
-      description: Get item detail
-      parameters:
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: '#/components/parameters/Authorization'
-  '/items/{itemId}/borrow':
+    parameters: []
+  /inventory/borrow:
     post:
       summary: Create borrow item request
       tags:
         - lend/borrow program
       operationId: post-user
       responses:
-        '201':
-          $ref: '#/components/responses/Borrow'
+        '200':
+          $ref: '#/components/responses/200'
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -116,71 +92,50 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/BorrowRequest'
     parameters:
-      - schema:
-          type: integer
-        name: itemId
-        in: path
+      - name: Content-Type
+        in: header
         required: true
-        description: item uuid
-      - $ref: '#/components/parameters/Content-Type'
-      - $ref: '#/components/parameters/Authorization'
-  '/items/{itemId}/return':
-    parameters:
-      - schema:
-          type: integer
-        name: itemId
-        in: path
+        schema:
+          type: string
+          default: application/json
+      - name: Authorization
+        in: header
         required: true
+        schema:
+          type: string
+          default: 'Bearer {{access_token}}'
+  /inventory/return:
+    parameters: []
     post:
       summary: Create return item request
       tags:
         - lend/borrow program
       operationId: post-items-itemId-return_item
       responses:
-        '201':
-          description: Created
+        '200':
+          $ref: '#/components/responses/200'
         '400':
           $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
+        '422':
+          $ref: '#/components/responses/422'
       description: Request to return item
       parameters:
         - $ref: '#/components/parameters/Content-Type'
         - $ref: '#/components/parameters/Authorization'
-  /items/borrow:
-    get:
-      summary: Get list of borrowed items
-      tags:
-        - lend/borrow program
-      responses:
-        '200':
-          $ref: '#/components/responses/ItemBorrowed'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-      operationId: get-items-borrowed
-      description: Get list of borrowed items
-      parameters:
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: '#/components/parameters/Authorization'
-  /me/borrow:
-    get:
-      summary: List of item someone borrowed
-      tags:
-        - lend/borrow program
-      responses:
-        '200':
-          $ref: '#/components/responses/MyItemBorrowedHistory'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-      operationId: get-me-borrow
-      description: Get list of item a certain person borrow
-      parameters:
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: '#/components/parameters/Authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_id:
+                  type: string
+            examples:
+              return item:
+                value:
+                  device_id: POIU123
   /me/benefits:
     get:
       summary: List of my benefits
@@ -733,48 +688,48 @@ paths:
                               type: string
                             phone:
                               type: string
-                            address:
-                              type: string
                             email:
+                              type: string
+                            address:
                               type: string
                         item:
                           type: object
                           properties:
-                            id:
-                              type: number
-                            name:
+                            item_name:
                               type: string
-                            type:
+                            item_type:
                               type: string
-                            spec:
+                            description:
+                              type: string
+                            item_spec:
                               type: object
                               properties:
                                 ram:
-                                  type: number
+                                  type: string
                                 storage:
-                                  type: number
+                                  type: string
                         requested_at:
                           type: string
               examples:
-                ListBorrowApplicationRequestExample:
+                Borrow request:
                   value:
-                    total: 1
+                    total: 0
                     data:
-                      - id: 1
+                      - id: 0
                         applicants_detail:
-                          name: user name
-                          position: engineer
-                          phone: '0821'
-                          address: jakarta
-                          email: email@gmail.com
+                          name: string
+                          position: string
+                          phone: string
+                          email: string
+                          address: string
                         item:
-                          id: 101
-                          name: Iphone X
-                          type: Phone
-                          spec:
-                            ram: 4
-                            storage: 128
-                        requested_at: '2009-11-10T23:00:00Z'
+                          item_name: string
+                          item_type: string
+                          description: string
+                          item_spec:
+                            ram: string
+                            storage: string
+                        requested_at: string
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -808,12 +763,12 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: number
+                device_id:
+                  type: string
             examples:
               AcceptBorrowApplicationExample:
                 value:
-                  id: 10
+                  device_id: OIUP123
     patch:
       summary: Decline Borrow Application Request
       tags:
@@ -824,14 +779,24 @@ paths:
         - $ref: '#/components/parameters/Content-Type'
         - $ref: '#/components/parameters/Authorization'
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
         '400':
           $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
-        '422':
-          $ref: '#/components/responses/422'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_id:
+                  type: string
+            examples:
+              example-1:
+                value:
+                  device_id: OIUP123
 components:
   schemas:
     Installment:
@@ -890,48 +855,6 @@ components:
           approval_at: '2009-11-10T23:00:00Z'
           finish_at: '2009-11-10T23:00:00Z'
           first_time: false
-    Borrowed-item:
-      title: Borrowed-item
-      type: object
-      properties:
-        id:
-          type: number
-        item_id:
-          type: number
-        account_id:
-          type: number
-        item_name:
-          type: string
-        item_type:
-          type: string
-        item_img:
-          type: string
-        item_status:
-          type: boolean
-        ram:
-          type: number
-        storage:
-          type: number
-        color:
-          type: string
-        borrow_at:
-          type: string
-        borrow_by:
-          type: string
-      x-examples:
-        example-1:
-          id: 1
-          item_id: 10
-          account_id: 55
-          item_name: Iphone X
-          item_type: Phone
-          item_img: item_uuid.jpeg
-          item_status: true
-          ram: 4
-          storage: 123
-          color: black
-          borrow_at: 10/10/2021
-          borrow_by: moris
     Benefit:
       title: Benefit
       type: object
@@ -987,27 +910,10 @@ components:
           schema:
             type: object
             properties:
-              item_id:
-                type: number
-              item_type:
+              device_id:
                 type: string
-              item_name:
-                type: string
-              item_spec:
-                type: object
-                required:
-                  - item_ram
-                  - item_storage
-                properties:
-                  item_ram:
-                    type: number
-                  item_storage:
-                    type: number
             required:
-              - item_id
-              - item_type
-              - item_name
-              - item_spec
+              - device_id
           examples:
             Borrow request:
               $ref: '#/components/examples/BorrowRequestExample'
@@ -1021,7 +927,7 @@ components:
         success: true
     ErrorResp:
       value:
-        code: Err-XX
+        code: err-xx
         message: error messages
     422Resp:
       value:
@@ -1042,71 +948,9 @@ components:
             description: RAM 10GB
             price: 5000
             type: phone
-    ItemToBeBorrowedExample:
-      value:
-        total: 2
-        data:
-          - item_id: 101
-            item_name: mac pro 2021
-            item_type: laptop
-            item_img: item_uuid.jpeg
-            item_status: true
-          - item_id: 201
-            item_name: Iphone x
-            item_type: Phone
-            item_img: item_uuid.jpeg
-            item_status: true
-    ItemToBeBorrowedDetailExample:
-      value:
-        item_id: 101
-        item_name: Iphone X
-        item_type: Phone
-        item_img: item_uuid.jpeg
-        color: White
-        ram: 4
-        storage: 128
-        item_status: true
     BorrowRequestExample:
       value:
-        item_id: 101
-        item_type: Phone
-        item_name: Iphone x
-        item_spec:
-          item_ram: 4
-          item_storage: 128
-    BorrowResponseExample:
-      value:
-        item_id: 101
-        item_type: Phone
-        item_name: Iphone x
-        item_spec:
-          item_ram: 4
-          item_storage: 128
-    ListOfItemBorrowed:
-      value:
-        total: 2
-        data:
-          - item_id: 101
-            item_name: mac pro 2021
-            item_type: laptop
-            item_img: item_uuid.jpeg
-            borrow_at: '2009-11-10T23:00:00Z'
-            borrow_by: moris
-          - item_id: 201
-            item_name: Iphone x
-            item_type: Phone
-            item_img: item_uuid.jpeg
-            borrow_at: '2009-11-10T23:00:00Z'
-            borrow_by: agus
-    MyItemBorrowedHistory:
-      value:
-        total: 1
-        data:
-          - item_id: 101
-            item_name: mac pro 2021
-            item_type: laptop
-            item_img: item_uuid.jpeg
-            borrow_at: '2009-11-10T23:00:00Z'
+        device_id: POIU123
     MyBenefits:
       value:
         total: 2
@@ -1295,15 +1139,39 @@ components:
                   properties:
                     item_id:
                       type: number
+                    device_id:
+                      type: string
+                    serial_number:
+                      type: string
                     item_name:
+                      type: string
+                    item_type:
                       type: string
                     item_img:
                       type: string
+                    item_color:
+                      type: string
                     item_status:
-                      type: boolean
-                      description: 'true if the item is available, false if the item is unavailable'
+                      type: string
+                      description: ''
+                    item_spec:
+                      type: object
+                      properties:
+                        ram:
+                          type: string
+                        storage:
+                          type: string
+                    desc:
+                      type: string
+                    borrow_by:
+                      type: number
+                      description: Borrow by contains user account id
+                    borrow_at:
+                      type: string
                   required:
                     - item_id
+                    - device_id
+                    - serial_number
                     - item_name
                     - item_img
                     - item_status
@@ -1311,75 +1179,37 @@ components:
               - total
               - data
           examples:
-            Item to be borrowed:
-              $ref: '#/components/examples/ItemToBeBorrowedExample'
-    ItemToBeBorrowedDetail:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              item_id:
-                type: number
-              item_name:
-                type: string
-              item_type:
-                type: string
-              item_img:
-                type: string
-              color:
-                type: string
-              ram:
-                type: number
-              storage:
-                type: number
-              item_status:
-                type: boolean
-                description: 'true if the item is available, false if the item is unavailable'
-            required:
-              - item_id
-              - item_name
-              - item_type
-              - item_img
-              - color
-              - ram
-              - storage
-              - item_status
-          examples:
-            Item to be borrowed detail:
-              $ref: '#/components/examples/ItemToBeBorrowedDetailExample'
-    Borrow:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              item_id:
-                type: number
-              item_type:
-                type: string
-              item_name:
-                type: string
-              item_spec:
-                type: object
-                required:
-                  - item_ram
-                  - item_storage
-                properties:
-                  item_ram:
-                    type: number
-                  item_storage:
-                    type: number
-            required:
-              - item_id
-              - item_type
-              - item_name
-              - item_spec
-          examples:
-            Borrow response:
-              $ref: '#/components/examples/BorrowResponseExample'
+            Inventory item:
+              total: 2
+              data:
+                - item_id: 1
+                  device_id: POIU123
+                  serial_number: ZXCV123
+                  item_name: Macbook Pro
+                  item_type: LAPTOP
+                  item_img: item_uuid.jpeg
+                  item_color: space gray
+                  item_status: AVAILABLE
+                  item_spec:
+                    ram: 4GB
+                    storage: 128GB
+                  desc: New Laptop
+                  borrow_by: 102
+                  borrow_at: '2009-11-10T23:00:00Z'
+                - item_id: 2
+                  device_id: POIU567
+                  serial_number: ZXCV980
+                  item_name: Iphone SE
+                  item_type: MOBILE
+                  item_img: item_uuid.jpeg
+                  item_color: white
+                  item_status: UNAVAILABLE
+                  item_spec:
+                    ram: 4GB
+                    storage: 128GB
+                  desc: Special edition iphone
+                  borrow_by: 201
+                  borrow_at: '2009-11-10T23:00:00Z'
     ItemBorrowed:
       description: Example response
       content:
@@ -1418,8 +1248,15 @@ components:
               - total
               - data
           examples:
-            List of item borrowed:
-              $ref: '#/components/examples/ListOfItemBorrowed'
+            example-1:
+              total: 0
+              data:
+                - item_id: 0
+                  item_name: string
+                  item_type: string
+                  item_img: string
+                  borrow_at: dd/mm/yyyy
+                  borrow_by: string
     MyItemBorrowedHistory:
       description: Example response
       content:
