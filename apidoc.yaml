@@ -253,119 +253,18 @@ paths:
         - $ref: '#/components/parameters/Authorization'
   /installment/catalog:
     get:
-      summary: Get User Installment Catalog
+      summary: Get Installment Catalog
       tags:
         - installment/purchase program
       responses:
         '200':
-          $ref: '#/components/responses/UserInstallmentCatalog'
+          $ref: '#/components/responses/InstallmentCatalog'
         '400':
           $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
       operationId: get-installment-catalog
       description: Get List Of Previous User Installment Item
-      parameters:
-        - $ref: '#/components/parameters/Content-Type'
-        - $ref: '#/components/parameters/Authorization'
-  '/installment/catalog/{catalogId}':
-    parameters:
-      - schema:
-          type: number
-          example: 1
-        name: catalogId
-        in: path
-        required: true
-    get:
-      summary: Get Catalog Detail Information
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                properties:
-                  id:
-                    type: number
-                  title:
-                    type: string
-                    minLength: 1
-                  specification:
-                    type: string
-                    minLength: 1
-                  price:
-                    type: number
-                  type:
-                    type: string
-                    minLength: 1
-                  available_color:
-                    type: array
-                    items:
-                      required: []
-                      properties: {}
-                  product:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      serial-number:
-                        type: string
-                    required:
-                      - name
-                      - serial-number
-                  subsidy:
-                    type: array
-                    items:
-                      required: []
-                      properties: {}
-                required:
-                  - id
-                  - title
-                  - specification
-                  - price
-                  - type
-                  - available_color
-                  - product
-                  - subsidy
-                x-examples:
-                  example-1:
-                    id: 1
-                    title: mac pro 2021
-                    specification: RAM 20GB
-                    price: 1000000
-                    type: device
-                    available_color:
-                      - Red
-                      - Blue
-                    product:
-                      name: ''
-                      serial-number: ''
-                    subsidy: []
-              examples:
-                Catalog Detail Information:
-                  value:
-                    id: 1
-                    title: mac pro 2021
-                    specification: RAM 20GB
-                    price: 1000000
-                    type: device
-                    available_color:
-                      - Red
-                      - Blue
-                    product:
-                      name: ''
-                      serial_number: ''
-                    subsidy: []
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-      operationId: get-installment-catalog-catalogId
-      description: Get Catalog Detail Information from spesific catalog
-      tags:
-        - installment/purchase program
       parameters:
         - $ref: '#/components/parameters/Content-Type'
         - $ref: '#/components/parameters/Authorization'
@@ -392,31 +291,80 @@ paths:
                     items:
                       required:
                         - id
-                        - title
-                        - specification
-                        - start_contract
-                        - end_contract
-                        - payment_remaining
-                        - approved
+                        - price
+                        - subsidy_amount
+                        - remaining_payment_amount
+                        - installment_status
+                        - requested_at
+                        - started_at
+                        - approval_at
+                        - finish_at
+                        - first_time
                       properties:
                         id:
                           type: number
-                        title:
-                          type: string
-                          minLength: 1
-                        specification:
-                          type: string
-                          minLength: 1
-                        start_contract:
-                          type: string
-                          minLength: 1
-                        end_contract:
-                          type: string
-                          minLength: 1
-                        payment_remaining:
+                        price:
                           type: number
-                        approved:
+                        subsidy_amount:
+                          type: number
+                        remaining_payment_amount:
+                          type: number
+                        installment_status:
+                          type: string
+                          minLength: 1
+                        requested_at:
+                          type: string
+                          minLength: 1
+                        started_at:
+                          type: string
+                          minLength: 1
+                        approval_at:
+                          type: string
+                          minLength: 1
+                        finish_at:
+                          type: string
+                          minLength: 1
+                        first_time:
                           type: boolean
+                        catalog:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            title:
+                              type: string
+                              minLength: 1
+                            specification:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - title
+                            - specification
+                        owner:
+                          type: object
+                          properties:
+                            fullname:
+                              type: string
+                              minLength: 1
+                            email:
+                              type: string
+                              minLength: 1
+                            position:
+                              type: string
+                              minLength: 1
+                            address:
+                              type: string
+                              minLength: 1
+                            phone_number:
+                              type: string
+                              minLength: 1
+                          required:
+                            - fullname
+                            - email
+                            - position
+                            - address
+                            - phone_number
                 required:
                   - total
                   - data
@@ -425,24 +373,50 @@ paths:
                     total: 1
                     data:
                       - id: 1
-                        title: macbook
-                        specification: 2GB
-                        start_contract: '2009-11-10T23:00:00Z'
-                        end_contract: '2009-11-10T23:00:00Z'
-                        payment_remaining: 5000000
-                        approved: false
+                        price: 5000000
+                        subsidy_amount: 1000000
+                        remaining_payment_amount: 4000000
+                        installment_status: approved
+                        requested_at: '2009-11-10T23:00:00Z'
+                        started_at: '2009-11-10T23:00:00Z'
+                        approval_at: '2009-11-10T23:00:00Z'
+                        finish_at: '2009-11-10T23:00:00Z'
+                        first_time: true
+                        catalog:
+                          id: 1
+                          title: macbook
+                          specification: 2GB
+                        owner:
+                          fullname: agus b
+                          email: owneremail@gmail.com
+                          position: staff
+                          address: address
+                          phone_number: '08213'
               examples:
-                InstallmentList:
+                InstallmentListResponseExample:
                   value:
                     total: 1
                     data:
                       - id: 1
-                        title: macbook
-                        specification: 2GB
-                        start_contract: '2009-11-10T23:00:00Z'
-                        end_contract: '2009-11-10T23:00:00Z'
-                        payment_remaining: 5000000
-                        approved: false
+                        price: 5000000
+                        subsidy_amount: 1000000
+                        remaining_payment_amount: 4000000
+                        installment_status: approved
+                        requested_at: '2009-11-10T23:00:00Z'
+                        started_at: '2009-11-10T23:00:00Z'
+                        approval_at: '2009-11-10T23:00:00Z'
+                        finish_at: '2009-11-10T23:00:00Z'
+                        first_time: true
+                        catalog:
+                          id: 1
+                          title: macbook
+                          specification: 2GB
+                        owner:
+                          fullname: agus b
+                          email: owneremail@gmail.com
+                          position: staff
+                          address: address
+                          phone_number: '08213'
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -487,48 +461,6 @@ paths:
         description: installment apllication request
       description: Apply Installment/Purcashe Program
       parameters:
-        - $ref: '#/components/parameters/Authorization'
-  '/installment/{installmentId}':
-    parameters:
-      - schema:
-          type: number
-          example: 1
-        name: installmentId
-        in: path
-        required: true
-    get:
-      summary: Get Detail Installment
-      tags:
-        - installment/purchase program
-      operationId: get-installment-installmentId
-      description: Get Detail Contract of Installment
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Installment'
-              examples:
-                example-1:
-                  value:
-                    id: 0
-                    account_id: 0
-                    item_id: 0
-                    price: 0
-                    subsidy_amount: 0
-                    installment_status: string
-                    requested_at: string
-                    started_at: string
-                    approval_at: string
-                    finish_at: string
-                    first_time: true
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-      parameters:
-        - $ref: '#/components/parameters/Content-Type'
         - $ref: '#/components/parameters/Authorization'
   /installment/application:
     get:
@@ -954,6 +886,82 @@ components:
           benefit_name: Vision
           benefit_img: benefit_uuid.jpeg
           subsidy_amount: 1000000
+    InstallmentCatalog:
+      description: ''
+      type: object
+      properties:
+        total:
+          type: number
+        data:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            required:
+              - id
+              - title
+              - description
+              - price
+              - ram
+              - type
+              - subsidy_amount
+              - installment_month
+            properties:
+              id:
+                type: number
+              title:
+                type: string
+                minLength: 1
+              description:
+                type: string
+                minLength: 1
+              color:
+                type: array
+                items:
+                  required: []
+                  properties: {}
+              price:
+                type: number
+              ram:
+                type: string
+                minLength: 1
+              type:
+                type: string
+                minLength: 1
+              subsidy_amount:
+                type: number
+              installment_month:
+                type: number
+      required:
+        - total
+        - data
+      x-examples:
+        installmentCatalogExample:
+          total: 2
+          data:
+            - id: 1
+              title: mac pro 2021
+              description: RAM 20GB
+              color:
+                - Red
+                - Blue
+              price: 2000000
+              ram: 8GB
+              type: DEVICE
+              subsidy_amount: 15000000
+              installment_month: 36
+            - id: 2
+              title: hp iphone
+              description: RAM 20GB
+              color:
+                - Red
+                - Blue
+              price: 1000000
+              ram: 8GB
+              type: PHONE
+              subsidy_amount: 8000000
+              installment_month: 12
+      title: ''
   requestBodies:
     LoginRequest:
       content:
@@ -1009,20 +1017,6 @@ components:
         fields:
           fieldname1: ''
           fieldname2: ''
-    InstallmentCatalogExample:
-      value:
-        total: 2
-        data:
-          - id: 1
-            title: mac pro 2021
-            description: RAM 20GB
-            price: 1000000
-            type: device
-          - id: 1
-            title: Iphone X
-            description: RAM 10GB
-            price: 5000
-            type: phone
     BorrowRequestExample:
       value:
         device_id: POIU123
@@ -1042,6 +1036,32 @@ components:
         benefit_name: Vaccination
         benefit_img: benefit_uuid.jpeg
         subsidy_amount: 1000000
+    InstallmentCatalogExample:
+      value:
+        total: 2
+        data:
+          - id: 1
+            title: mac pro 2021
+            description: RAM 20GB
+            color:
+              - Red
+              - Blue
+            price: 2000000
+            ram: 8GB
+            type: DEVICE
+            subsidy_amount: 15000000
+            installment_month: 36
+          - id: 2
+            title: hp iphone
+            description: RAM 20GB
+            color:
+              - Red
+              - Blue
+            price: 1000000
+            ram: 8GB
+            type: PHONE
+            subsidy_amount: 8000000
+            installment_month: 12
   parameters:
     Content-Type:
       name: Content-Type
@@ -1143,44 +1163,13 @@ components:
           examples:
             UnprocessibleEntityResponseExample:
               $ref: '#/components/examples/422Resp'
-    UserInstallmentCatalog:
+    InstallmentCatalog:
       description: Example response
       content:
         application/json:
           schema:
             description: ''
             type: object
-            properties:
-              total:
-                type: number
-              data:
-                type: array
-                uniqueItems: true
-                minItems: 1
-                items:
-                  required:
-                    - id
-                    - title
-                    - description
-                    - price
-                    - type
-                  properties:
-                    id:
-                      type: number
-                    title:
-                      type: string
-                      minLength: 1
-                    description:
-                      type: string
-                      minLength: 1
-                    price:
-                      type: number
-                    type:
-                      type: string
-                      minLength: 1
-            required:
-              - total
-              - data
             x-examples:
               example-1:
                 total: 2
@@ -1195,8 +1184,20 @@ components:
                     description: RAM 10GB
                     price: 5000
                     type: phone
+            properties:
+              total:
+                type: number
+              data:
+                type: array
+                uniqueItems: true
+                minItems: 1
+                items:
+                  $ref: '#/components/schemas/InstallmentCatalog'
+            required:
+              - total
+              - data
           examples:
-            UserInstallmentCatalog:
+            InstallmentCatalogExample:
               $ref: '#/components/examples/InstallmentCatalogExample'
     MyBenefits:
       description: Example response
