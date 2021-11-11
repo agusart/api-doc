@@ -62,7 +62,82 @@ paths:
         - lend/borrow program
       responses:
         '200':
-          $ref: '#/components/responses/ItemToBeBorrowed'
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: number
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        item_id:
+                          type: number
+                        device_id:
+                          type: string
+                        serial_number:
+                          type: string
+                        item_name:
+                          type: string
+                        item_type:
+                          type: string
+                        item_img:
+                          type: string
+                        item_color:
+                          type: string
+                        item_status:
+                          type: string
+                        item_spec:
+                          type: object
+                          properties:
+                            ram:
+                              type: string
+                            storage:
+                              type: string
+                        desc:
+                          type: string
+                        borrow_by:
+                          type: number
+                          description: borrow by contains account id
+                        borrow_at:
+                          type: string
+              examples:
+                inventory list:
+                  value:
+                    total: 2
+                    data:
+                      - item_id: 1
+                        device_id: POIU123
+                        serial_number: ZXCV123
+                        item_name: Macbook Pro
+                        item_type: LAPTOP
+                        item_img: item_uuid.jpeg
+                        item_color: space gray
+                        item_status: AVAILABLE
+                        item_spec:
+                          ram: 4GB
+                          storage: 128GB
+                        desc: New Laptop
+                        borrow_by: 102
+                        borrow_at: '2009-11-10T23:00:00Z'
+                      - item_id: 2
+                        device_id: POIU567
+                        serial_number: ZXCV980
+                        item_name: Iphone SE
+                        item_type: MOBILE
+                        item_img: item_uuid.jpeg
+                        item_color: white
+                        item_status: UNAVAILABLE
+                        item_spec:
+                          ram: 4GB
+                          storage: 128GB
+                        desc: Special edition iphone
+                        borrow_by: 201
+                        borrow_at: '2009-11-10T23:00:00Z'
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -713,7 +788,7 @@ paths:
               examples:
                 Borrow request:
                   value:
-                    total: 0
+                    total: 1
                     data:
                       - id: 0
                         applicants_detail:
@@ -1123,177 +1198,6 @@ components:
           examples:
             UserInstallmentCatalog:
               $ref: '#/components/examples/InstallmentCatalogExample'
-    ItemToBeBorrowed:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              total:
-                type: number
-              data:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    item_id:
-                      type: number
-                    device_id:
-                      type: string
-                    serial_number:
-                      type: string
-                    item_name:
-                      type: string
-                    item_type:
-                      type: string
-                    item_img:
-                      type: string
-                    item_color:
-                      type: string
-                    item_status:
-                      type: string
-                      description: ''
-                    item_spec:
-                      type: object
-                      properties:
-                        ram:
-                          type: string
-                        storage:
-                          type: string
-                    desc:
-                      type: string
-                    borrow_by:
-                      type: number
-                      description: Borrow by contains user account id
-                    borrow_at:
-                      type: string
-                  required:
-                    - item_id
-                    - device_id
-                    - serial_number
-                    - item_name
-                    - item_img
-                    - item_status
-            required:
-              - total
-              - data
-          examples:
-            Inventory item:
-              total: 2
-              data:
-                - item_id: 1
-                  device_id: POIU123
-                  serial_number: ZXCV123
-                  item_name: Macbook Pro
-                  item_type: LAPTOP
-                  item_img: item_uuid.jpeg
-                  item_color: space gray
-                  item_status: AVAILABLE
-                  item_spec:
-                    ram: 4GB
-                    storage: 128GB
-                  desc: New Laptop
-                  borrow_by: 102
-                  borrow_at: '2009-11-10T23:00:00Z'
-                - item_id: 2
-                  device_id: POIU567
-                  serial_number: ZXCV980
-                  item_name: Iphone SE
-                  item_type: MOBILE
-                  item_img: item_uuid.jpeg
-                  item_color: white
-                  item_status: UNAVAILABLE
-                  item_spec:
-                    ram: 4GB
-                    storage: 128GB
-                  desc: Special edition iphone
-                  borrow_by: 201
-                  borrow_at: '2009-11-10T23:00:00Z'
-    ItemBorrowed:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              total:
-                type: number
-              data:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    item_id:
-                      type: number
-                    item_name:
-                      type: string
-                    item_type:
-                      type: string
-                    item_img:
-                      type: string
-                    borrow_at:
-                      type: string
-                      default: dd/mm/yyyy
-                    borrow_by:
-                      type: string
-                  required:
-                    - item_id
-                    - item_name
-                    - item_type
-                    - item_img
-                    - borrow_at
-                    - borrow_by
-            required:
-              - total
-              - data
-          examples:
-            example-1:
-              total: 0
-              data:
-                - item_id: 0
-                  item_name: string
-                  item_type: string
-                  item_img: string
-                  borrow_at: dd/mm/yyyy
-                  borrow_by: string
-    MyItemBorrowedHistory:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              total:
-                type: number
-              data:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    item_id:
-                      type: number
-                    item_name:
-                      type: string
-                    item_type:
-                      type: string
-                    item_img:
-                      type: string
-                    borrow_at:
-                      type: string
-                      default: dd/mm/yyyy
-                  required:
-                    - item_id
-                    - item_name
-                    - item_type
-                    - item_img
-                    - borrow_at
-            required:
-              - total
-              - data
-          examples:
-            My borrowed items:
-              $ref: '#/components/examples/MyItemBorrowedHistory'
     MyBenefits:
       description: Example response
       content:
